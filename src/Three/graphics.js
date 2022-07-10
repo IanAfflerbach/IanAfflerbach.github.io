@@ -31,11 +31,13 @@ function Box(props) {
 
 function Test(props) {
     return (
-        <Canvas>
-            <ambientLight/>
-            <pointLight position={[10, 10, 10]} />
-            <Box position={[0, 0, 0]} />
-        </Canvas>
+        <div style={{ width: "100vw", height: "100vh" }}>
+            <Canvas>
+                <ambientLight/>
+                <pointLight position={[10, 10, 10]} />
+                <Box position={[0, 0, 0]} />
+            </Canvas>
+        </div>
     )
 }
 
