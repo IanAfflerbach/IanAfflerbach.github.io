@@ -14,14 +14,14 @@
 }
 
 .App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+  background-color: #121113;
+  min-height: 10vh;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   font-size: calc(10px + 2vmin);
-  color: white;
+  color: rgb(203, 72, 221);
 }
 
 .App-link {
@@ -35,4 +35,18 @@
   to {
     transform: rotate(360deg);
   }
+}
+
+body {
+  background-color: #1e1c1f;
+  min-height: 80%;
+}
+
+.Three-graphics {
+  min-height: 100vh;
+  width: auto;
+}
+
+html {
+  min-height: 100%;
 }
