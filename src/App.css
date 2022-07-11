@@ -1,4 +1,6 @@
 .main {
   background-color: rgb(48, 42, 52);
-  min-height: 100vh;
+  min-height: 95vh;
+  min-width: 95vw;
+  padding: 2.5vh 2.5vw 2.5vh 2.5vw;
 }
