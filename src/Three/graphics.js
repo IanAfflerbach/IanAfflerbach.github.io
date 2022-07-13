@@ -7,10 +7,50 @@ let randomNumberInRange = (min, max) => Math.random() * (max - min) + min;
 function ParticlesTest(props) {
     let mesh = useRef();
 
+    const initAlphaSpeed = randomNumberInRange(0.05, 0.075);
+    const spawnAlphaDeg = randomNumberInRange(0.0, 360.0);
     let largeMeshAlpha = useRef();
+    const initBetaSpeed = randomNumberInRange(0.05, 0.075);
+    const spawnBetaDeg = randomNumberInRange(0.0, 360.0);
     let largeMeshBeta = useRef();
+    const initGammaSpeed = randomNumberInRange(0.05, 0.075);
+    const spawnGammaDeg = randomNumberInRange(0.0, 360.0);
     let largeMeshGamma = useRef();
-    let largeMeshes = [largeMeshAlpha, largeMeshBeta, largeMeshGamma];
+    let largeMeshes = [
+        { 
+            mesh:largeMeshAlpha,
+            vel: {
+                x: initAlphaSpeed * Math.cos(spawnAlphaDeg),
+                y: initAlphaSpeed * Math.sin(spawnAlphaDeg)
+            },
+            accel: {
+                x:0,
+                y:0
+            },
+        },
+        {
+            mesh:largeMeshBeta,
+            vel: {
+                x: initBetaSpeed * Math.cos(spawnBetaDeg),
+                y: initBetaSpeed * Math.sin(spawnBetaDeg)
+            },
+            accel: {
+                x:0,
+                y:0
+            },
+        },
+        {
+            mesh:largeMeshGamma,
+            vel: {
+                x: initGammaSpeed * Math.cos(spawnGammaDeg),
+                y: initGammaSpeed * Math.sin(spawnGammaDeg)
+            },
+            accel: {
+                x:0,
+                y:0
+            },
+        }
+    ];
 
     const particles = useMemo(() => {
         const temp = [];
@@ -42,7 +82,7 @@ function ParticlesTest(props) {
     const dummy = useMemo(() => new THREE.Object3D(), []);
 
     const gravConst = 6.6743E-11;
-    const largeBodyMass = 1.0E8;
+    const largeBodyMass = 1.0E9;
 
     useFrame(() => {
         particles.forEach((particle, index) => {
@@ -61,11 +101,11 @@ function ParticlesTest(props) {
             let newAccelX = 0.0;
             let newAccelY = 0.0;
             largeMeshes.forEach((body) => {
-                const r = Math.sqrt(Math.pow(pos.x - body.current.position.x, 2) + Math.pow(pos.y - body.current.position.y, 2));
+                const r = Math.sqrt(Math.pow(pos.x - body.mesh.current.position.x, 2) + Math.pow(pos.y - body.mesh.current.position.y, 2));
                 const g = (gravConst * largeBodyMass) / Math.pow(r, 2);
 
-                newAccelX += g * (body.current.position.x - pos.x);
-                newAccelY += g * (body.current.position.y - pos.y);
+                newAccelX += g * (body.mesh.current.position.x - pos.x);
+                newAccelY += g * (body.mesh.current.position.y - pos.y);
             });
 
             accel.x = newAccelX;
@@ -73,8 +113,31 @@ function ParticlesTest(props) {
 
             mesh.current.setMatrixAt(index, dummy.matrix);
         });
-
         mesh.current.instanceMatrix.needsUpdate = true;
+
+        largeMeshes.forEach((body, i) => {
+            body.mesh.current.position.x += body.vel.x;
+            body.mesh.current.position.y += body.vel.y;
+
+            body.vel.x += body.accel.x;
+            body.vel.y += body.accel.y;
+
+            let newAccelX = 0.0;
+            let newAccelY = 0.0;
+            largeMeshes.forEach((other, j) => {
+                if (i !== j)
+                {
+                    const r = Math.sqrt(Math.pow(body.mesh.current.position.x - other.mesh.current.position.x, 2) + Math.pow(body.mesh.current.position.y - other.mesh.current.position.y, 2));
+                    const g = (gravConst * largeBodyMass) / Math.pow(r, 2);
+    
+                    newAccelX += g * (other.mesh.current.position.x - body.mesh.current.position.x);
+                    newAccelY += g * (other.mesh.current.position.y - body.mesh.current.position.y);
+                }
+            });
+
+            body.accel.x = newAccelX;
+            body.accel.y = newAccelY;
+        });
     });
 
     return (
@@ -108,11 +171,11 @@ function Test(props) {
     return (
         <div style={{ width: "95vw", height: "95vh" }}>
             <Canvas
-                camera={{ position: [0, 0, 40] }}
+                camera={{ position: [0, 0, 200] }}
                 onCreated={state => state.gl.setClearColor("black")}
             >
                 <ambientLight ref={light}/>
-                <ParticlesTest count={100}/>
+                <ParticlesTest count={5000}/>
             </Canvas>
         </div>
     )
