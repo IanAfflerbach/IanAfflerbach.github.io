@@ -3,6 +3,7 @@ import React, { useRef, useMemo } from 'react'
 import { Canvas, useFrame } from '@react-three/fiber'
 
 let randomNumberInRange = (min, max) => Math.random() * (max - min) + min;
+let camCoord = [0, 0];
 
 function ThreeBody(props) {
     let mesh = useRef();
@@ -115,9 +116,13 @@ function ThreeBody(props) {
         });
         mesh.current.instanceMatrix.needsUpdate = true;
 
+        let coordSums = [0, 0];
         largeMeshes.forEach((body, i) => {
             body.mesh.current.position.x += body.vel.x;
             body.mesh.current.position.y += body.vel.y;
+
+            coordSums[0] += body.mesh.current.position.x;
+            coordSums[1] += body.mesh.current.position.y;
 
             body.vel.x += body.accel.x;
             body.vel.y += body.accel.y;
@@ -138,6 +143,9 @@ function ThreeBody(props) {
             body.accel.x = newAccelX;
             body.accel.y = newAccelY;
         });
+
+        camCoord[0] = coordSums[0] / 3;
+        camCoord[1] = coordSums[1] / 3;
     });
 
     return (
@@ -165,6 +173,15 @@ function ThreeBody(props) {
     )
 }
 
+function Dolly() {
+    // This one makes the camera move in and out
+    useFrame(({ clock, camera }) => {
+      camera.position.x = camCoord[0];
+      camera.position.y = camCoord[1];
+    })
+    return null
+  }
+
 function ThreeBodyComponent(props) {
     let light = useRef();
 
@@ -175,7 +192,8 @@ function ThreeBodyComponent(props) {
                 onCreated={state => state.gl.setClearColor("black")}
             >
                 <ambientLight ref={light}/>
-                <ThreeBody count={5000}/>
+                <ThreeBody count={150}/>
+            <Dolly/>
             </Canvas>
         </div>
     )

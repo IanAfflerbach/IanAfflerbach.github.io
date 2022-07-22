@@ -6,10 +6,10 @@ const NavBar = () => {
     <>
       <Nav>
         <NavMenu>
-          <NavLink to="/" activeStyle>
+          <NavLink to="/" activestyle="true">
             Home
           </NavLink>
-          <NavLink to="/threebody" activeStyle>
+          <NavLink to="/threebody" activestyle="true">
             ThreeBody
           </NavLink>
         </NavMenu>
