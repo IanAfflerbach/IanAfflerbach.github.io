@@ -4,7 +4,7 @@ import { Canvas, useFrame } from '@react-three/fiber'
 
 let randomNumberInRange = (min, max) => Math.random() * (max - min) + min;
 
-function ParticlesTest(props) {
+function ThreeBody(props) {
     let mesh = useRef();
 
     const initAlphaSpeed = randomNumberInRange(0.05, 0.075);
@@ -165,7 +165,7 @@ function ParticlesTest(props) {
     )
 }
 
-function Test(props) {
+function ThreeBodyComponent(props) {
     let light = useRef();
 
     return (
@@ -175,10 +175,10 @@ function Test(props) {
                 onCreated={state => state.gl.setClearColor("black")}
             >
                 <ambientLight ref={light}/>
-                <ParticlesTest count={5000}/>
+                <ThreeBody count={5000}/>
             </Canvas>
         </div>
     )
 }
 
-export { Test }
+export default ThreeBodyComponent
